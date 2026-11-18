@@ -2,6 +2,8 @@
 
 Draw any closed shape with spinning circles.
 
+**▶ Live demo: https://raihanulhaque.github.io/fourier-epicycles/**
+
 The app takes an outline (a hummingbird, a heart, a star, a square, or something you draw yourself), works out its Fourier series, and rebuilds it with two chains of rotating circles called **epicycles**. One chain draws the x coordinate and the other draws the y coordinate. Where their guide lines cross, the pen traces the shape.
 
 Raise the number of harmonics **N** to see the curve get closer to the original. Sharp corners like feather tips and star points need many more terms than smooth curves do.
