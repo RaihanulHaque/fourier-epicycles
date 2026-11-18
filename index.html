@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fourier Epicycle Drawer</title>
+  <meta name="description" content="Rebuild any closed shape from spinning circles using its Fourier series.">
+  <meta name="theme-color" content="#111816">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Fourier Epicycle Drawer</h1>
+    <p>Two chains of spinning circles, one for <i>x(t)</i> and one for <i>y(t)</i>, rebuild a closed shape from its Fourier series. Raise <i>N</i> and watch sharp corners appear.</p>
+  </header>
+
+  <div class="app">
+    <div class="stage-wrap">
+      <canvas id="stage" aria-label="Fourier epicycle animation"></canvas>
+      <div class="eqs" aria-hidden="true">
+        <div class="eq x"><span>x<sub>N</sub>(t) = a<sub>0</sub> +</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>k=1</small></span><span>(a<sub>k</sub> cos kt + b<sub>k</sub> sin kt)</span></div>
+        <div class="eq y"><span>y<sub>N</sub>(t) = c<sub>0</sub> +</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>k=1</small></span><span>(c<sub>k</sub> cos kt + d<sub>k</sub> sin kt)</span></div>
+      </div>
+      <div class="bigN"><span>N</span><b id="bigN">10</b></div>
+      <div class="hint" id="hint" hidden>Draw one continuous loop here</div>
+    </div>
+
+    <aside>
+      <div class="group">
+        <div class="label">Shape</div>
+        <div class="shapes" id="shapes">
+          <button id="sh-bird" data-shape="bird" aria-pressed="true">Hummingbird</button>
+          <button id="sh-heart" data-shape="heart" aria-pressed="false">Heart</button>
+          <button id="sh-star" data-shape="star" aria-pressed="false">Star</button>
+          <button id="sh-square" data-shape="square" aria-pressed="false">Square</button>
+          <button id="sh-draw" data-shape="draw" aria-pressed="false">Draw your own</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="slider">
+          <label class="label" for="nRange">Harmonics N</label><output id="nOut">10</output>
+          <input type="range" id="nRange" min="1" max="150" value="10">
+        </div>
+        <div class="slider">
+          <label class="label" for="spRange">Speed</label><output id="spOut">1.0×</output>
+          <input type="range" id="spRange" min="0.1" max="4" step="0.1" value="1">
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="play" class="btn-main">Pause</button>
+        <button id="restart">Restart</button>
+      </div>
+
+      <div class="toggles">
+        <label><input type="checkbox" id="tgSweep"> Grow N every loop</label>
+        <label><input type="checkbox" id="tgCircles" checked> Show circles</label>
+        <label><input type="checkbox" id="tgShape" checked> Show target shape</label>
+        <label><input type="checkbox" id="tgFull"> Show full N-term curve</label>
+      </div>
+
+      <dl class="readout">
+        <dt>Circles spinning</dt><dd id="rCircles">20</dd>
+        <dt>Shape energy captured</dt><dd id="rEnergy">–</dd>
+        <div class="meter"><i id="rMeter"></i></div>
+      </dl>
+
+      <div class="how">
+        <p>The outline is sampled at 512 points. A discrete Fourier transform turns the <i>x</i> values into coefficients <em>a<sub>k</sub>, b<sub>k</sub></em> and the <i>y</i> values into <em>c<sub>k</sub>, d<sub>k</sub></em>.</p>
+        <p>Each term <em>a<sub>k</sub>cos kt + b<sub>k</sub>sin kt</em> is one circle of radius <em>√(a<sub>k</sub>²+b<sub>k</sub>²)</em> spinning <i>k</i> times per loop. Stacking them tip to tail adds the terms.</p>
+        <p><span class="swatch" style="background:var(--x)"></span>top chain gives <i>x</i>, <span class="swatch" style="background:var(--y)"></span>left chain gives <i>y</i>. Where their dashed lines cross is the pen.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="src/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>

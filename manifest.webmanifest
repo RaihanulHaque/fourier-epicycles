@@ -1,0 +1,13 @@
+{
+  "name": "Fourier Epicycle Drawer",
+  "short_name": "Epicycles",
+  "description": "Rebuild any closed shape from spinning circles using its Fourier series.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111816",
+  "theme_color": "#111816",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
