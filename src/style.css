@@ -115,3 +115,31 @@ input[type=checkbox] { accent-color: var(--trace); width: 15px; height: 15px; }
 .how p { margin: 0; }
 .how em { color: var(--ink); font-family: var(--f-display); font-size: 14px; }
 .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+
+/* ---- Text, upload, segmented controls, sharing ---- */
+.field { display: flex; gap: 6px; margin: 0; }
+.field input[type=text] {
+  flex: 1; min-width: 0; font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px;
+}
+.field input[type=text]::placeholder { color: var(--muted); }
+label.btn {
+  display: flex; justify-content: center; align-items: center; cursor: pointer;
+  border: 1px dashed var(--muted); border-radius: 4px; padding: 7px 10px; color: var(--ink);
+}
+label.btn:hover { border-color: var(--ink); }
+input[type=file]:focus-visible + .note, label.btn:focus-within { outline: 2px solid var(--trace); }
+.note { font-size: 12px; color: var(--muted); margin: 0; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.seg button { flex: 1; border: 0; border-radius: 0; padding: 6px 8px; font-size: 13px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.share { border-top: 1px solid var(--line); padding-top: 14px; }
+.status { font-family: var(--f-mono); font-size: 12px; color: var(--muted); min-height: 1.5em; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+.eqgroup { display: grid; gap: 10px; }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 4px;
+  z-index: 20; font-weight: 500; max-width: calc(100% - 32px);
+}

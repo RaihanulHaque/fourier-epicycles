@@ -1,6 +1,6 @@
 // Offline cache: serve app files from cache, refresh them in the background.
-const CACHE = 'epicycles-v1';
-const FILES = ['./', 'index.html', 'src/style.css', 'src/app.js', 'manifest.webmanifest', 'icons/icon.svg'];
+const CACHE = 'epicycles-v2';
+const FILES = ['./', 'index.html', 'src/style.css', 'src/app.js', 'src/fourier.js', 'src/render.js', 'src/shapes.js', 'src/trace.js', 'src/share.js', 'src/export.js', 'manifest.webmanifest', 'icons/icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

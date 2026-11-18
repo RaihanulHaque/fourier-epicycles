@@ -4,29 +4,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Fourier Epicycle Drawer</title>
-  <meta name="description" content="Rebuild any closed shape from spinning circles using its Fourier series.">
+  <meta name="description" content="Type your name, upload a logo or draw anything, and watch spinning circles redraw it with a Fourier series. Export the video for Reels, TikTok and Shorts.">
   <meta name="theme-color" content="#111816">
+  <meta property="og:title" content="Fourier Epicycle Drawer">
+  <meta property="og:description" content="Type your name, upload a logo or draw anything, and watch spinning circles redraw it.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://raihanulhaque.github.io/fourier-epicycles/">
+  <meta name="twitter:card" content="summary">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Pacifico&display=swap">
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>Fourier Epicycle Drawer</h1>
-    <p>Two chains of spinning circles, one for <i>x(t)</i> and one for <i>y(t)</i>, rebuild a closed shape from its Fourier series. Raise <i>N</i> and watch sharp corners appear.</p>
+    <p>Type your name, upload a logo or draw anything. Spinning circles redraw it from its Fourier series. Raise <i>N</i> and watch the sharp corners appear.</p>
   </header>
 
   <div class="app">
     <div class="stage-wrap">
       <canvas id="stage" aria-label="Fourier epicycle animation"></canvas>
       <div class="eqs" aria-hidden="true">
-        <div class="eq x"><span>x<sub>N</sub>(t) = a<sub>0</sub> +</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>k=1</small></span><span>(a<sub>k</sub> cos kt + b<sub>k</sub> sin kt)</span></div>
-        <div class="eq y"><span>y<sub>N</sub>(t) = c<sub>0</sub> +</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>k=1</small></span><span>(c<sub>k</sub> cos kt + d<sub>k</sub> sin kt)</span></div>
+        <div id="eqTwo" class="eqgroup">
+          <div class="eq x"><span>x<sub>N</sub>(t) = a<sub>0</sub> +</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>k=1</small></span><span>(a<sub>k</sub> cos kt + b<sub>k</sub> sin kt)</span></div>
+          <div class="eq y"><span>y<sub>N</sub>(t) = c<sub>0</sub> +</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>k=1</small></span><span>(c<sub>k</sub> cos kt + d<sub>k</sub> sin kt)</span></div>
+        </div>
+        <div id="eqOne" class="eqgroup" hidden>
+          <div class="eq x"><span>z<sub>N</sub>(t) =</span><span class="sum"><small class="nTop">N</small><b>Σ</b><small>n=−N</small></span><span>c<sub>n</sub> e<sup>int</sup></span></div>
+        </div>
       </div>
       <div class="bigN"><span>N</span><b id="bigN">10</b></div>
       <div class="hint" id="hint" hidden>Draw one continuous loop here</div>
@@ -42,12 +52,27 @@
           <button id="sh-square" data-shape="square" aria-pressed="false">Square</button>
           <button id="sh-draw" data-shape="draw" aria-pressed="false">Draw your own</button>
         </div>
+        <form class="field" id="textForm">
+          <input type="text" id="textIn" maxlength="24" placeholder="Type your name" autocomplete="off" aria-label="Text to draw">
+          <button type="submit" id="textGo">Draw text</button>
+        </form>
+        <label class="btn" for="fileIn">Upload image or SVG</label>
+        <input type="file" id="fileIn" accept="image/png,image/jpeg,image/webp,image/svg+xml,.svg" hidden>
+        <p class="note">Works best with a dark logo or silhouette on a plain background.</p>
+      </div>
+
+      <div class="group">
+        <div class="label">Circles</div>
+        <div class="seg" id="modeSeg">
+          <button id="mode-two" data-mode="two" aria-pressed="true">Two chains (x, y)</button>
+          <button id="mode-one" data-mode="one" aria-pressed="false">One chain (complex)</button>
+        </div>
       </div>
 
       <div class="group">
         <div class="slider">
           <label class="label" for="nRange">Harmonics N</label><output id="nOut">10</output>
-          <input type="range" id="nRange" min="1" max="150" value="10">
+          <input type="range" id="nRange" min="1" max="300" value="10">
         </div>
         <div class="slider">
           <label class="label" for="spRange">Speed</label><output id="spOut">1.0×</output>
@@ -73,16 +98,37 @@
         <div class="meter"><i id="rMeter"></i></div>
       </dl>
 
+      <div class="group share">
+        <div class="label">Share</div>
+        <button id="shareLink">Copy link to this drawing</button>
+        <div class="seg" id="fmtSeg">
+          <button id="fmt-tall" data-value="tall" aria-pressed="true">Vertical 9:16</button>
+          <button id="fmt-square" data-value="square" aria-pressed="false">Square 1:1</button>
+        </div>
+        <div class="seg" id="contentSeg">
+          <button id="ct-sweep" data-value="sweep" aria-pressed="true">Growing N</button>
+          <button id="ct-loop" data-value="loop" aria-pressed="false">One loop</button>
+        </div>
+        <button id="recBtn" class="btn-main">Record video</button>
+        <div class="status" id="recStatus" aria-live="polite"></div>
+        <div class="row" id="videoReady" hidden>
+          <button id="downloadVideo">Download video</button>
+          <button id="shareVideo" hidden>Share video</button>
+        </div>
+      </div>
+
       <div class="how">
-        <p>The outline is sampled at 512 points. A discrete Fourier transform turns the <i>x</i> values into coefficients <em>a<sub>k</sub>, b<sub>k</sub></em> and the <i>y</i> values into <em>c<sub>k</sub>, d<sub>k</sub></em>.</p>
+        <p>The outline is sampled at 1024 points. A discrete Fourier transform turns the <i>x</i> values into coefficients <em>a<sub>k</sub>, b<sub>k</sub></em> and the <i>y</i> values into <em>c<sub>k</sub>, d<sub>k</sub></em>.</p>
         <p>Each term <em>a<sub>k</sub>cos kt + b<sub>k</sub>sin kt</em> is one circle of radius <em>√(a<sub>k</sub>²+b<sub>k</sub>²)</em> spinning <i>k</i> times per loop. Stacking them tip to tail adds the terms.</p>
-        <p><span class="swatch" style="background:var(--x)"></span>top chain gives <i>x</i>, <span class="swatch" style="background:var(--y)"></span>left chain gives <i>y</i>. Where their dashed lines cross is the pen.</p>
+        <p><span class="swatch" style="background:var(--x)"></span>top chain gives <i>x</i>, <span class="swatch" style="background:var(--y)"></span>left chain gives <i>y</i>. In one-chain mode, the points are complex numbers <em>z = x + iy</em> and a single chain of circles draws the shape directly.</p>
       </div>
     </aside>
   </div>
 </div>
 
-<script src="src/app.js"></script>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script type="module" src="src/app.js"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     navigator.serviceWorker.register('sw.js').catch(() => {});
